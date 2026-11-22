@@ -1,0 +1,65 @@
+{
+  "info": {
+    "name": "Hotel Offer Orchestrator",
+    "_postman_id": "a7f2a7f0-0c40-4c7e-8a9e-5c3a7e6d1111",
+    "description": "API checks for supplier mocks, Temporal-backed comparison, Redis price filtering and health.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    }
+  ],
+  "item": [
+    {
+      "name": "Compare Delhi hotels (expected overlaps)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/hotels?city=delhi"
+      }
+    },
+    {
+      "name": "Filter Delhi hotels by price",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/hotels?city=delhi&minPrice=5000&maxPrice=6000"
+      }
+    },
+    {
+      "name": "City with no results",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/hotels?city=jaipur"
+      }
+    },
+    {
+      "name": "Supplier A mock",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/supplierA/hotels?city=delhi"
+      }
+    },
+    {
+      "name": "Supplier B mock",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/supplierB/hotels?city=delhi"
+      }
+    },
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/health"
+      }
+    },
+    {
+      "name": "Invalid price range",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/hotels?city=delhi&minPrice=7000&maxPrice=5000"
+      }
+    }
+  ]
+}

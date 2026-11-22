@@ -1,0 +1,224 @@
+{
+  "info": {
+    "_postman_id": "fd40e7fa-2264-47a9-a3d7-54f86b4604a5",
+    "name": "Hotel Offer Orchestrator",
+    "description": "API checks for supplier mocks, Temporal-backed comparison, Redis price filtering and health.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "43812806",
+    "_collection_link": "https://go.postman.co/collection/43812806-fd40e7fa-2264-47a9-a3d7-54f86b4604a5?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Compare Delhi hotels (expected overlaps)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/hotels?city=delhi",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "hotels"
+          ],
+          "query": [
+            {
+              "key": "city",
+              "value": "delhi"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Filter Delhi hotels by price",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/hotels?city=delhi&minPrice=5000&maxPrice=6000",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "hotels"
+          ],
+          "query": [
+            {
+              "key": "city",
+              "value": "delhi"
+            },
+            {
+              "key": "minPrice",
+              "value": "5000"
+            },
+            {
+              "key": "maxPrice",
+              "value": "6000"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "City with no results",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/hotels?city=jaipur",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "hotels"
+          ],
+          "query": [
+            {
+              "key": "city",
+              "value": "jaipur"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Supplier A mock",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/supplierA/hotels?city=delhi",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "supplierA",
+            "hotels"
+          ],
+          "query": [
+            {
+              "key": "city",
+              "value": "delhi"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Supplier B mock",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/supplierB/hotels?city=delhi",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "supplierB",
+            "hotels"
+          ],
+          "query": [
+            {
+              "key": "city",
+              "value": "delhi"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Invalid price range",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/hotels?city=delhi&minPrice=7000&maxPrice=5000",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "hotels"
+          ],
+          "query": [
+            {
+              "key": "city",
+              "value": "delhi"
+            },
+            {
+              "key": "minPrice",
+              "value": "7000"
+            },
+            {
+              "key": "maxPrice",
+              "value": "5000"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "exec": [
+          "\r",
+          "const url = pm.request.url.toString();\r",
+          "\r",
+          "const expectedStatus = url.includes(\"minPrice=7000\")\r",
+          "    ? 400\r",
+          "    : 200;\r",
+          "\r",
+          "pm.test(\"Correct HTTP status code\", function () {\r",
+          "    pm.response.to.have.status(expectedStatus);\r",
+          "});\r",
+          "\r",
+          "pm.test(\"Response is valid JSON\", function () {\r",
+          "    pm.response.to.be.json;\r",
+          "});\r",
+          "\r",
+          "pm.test(\"Response time is under 5 seconds\", function () {\r",
+          "    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+          "});\r",
+          ""
+        ],
+        "type": "text/javascript"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    }
+  ]
+}
